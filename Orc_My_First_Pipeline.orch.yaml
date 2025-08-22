@@ -1,0 +1,127 @@
+type: "orchestration"
+version: "1.0"
+pipeline:
+  components:
+    Start:
+      type: "start"
+      transitions:
+        unconditional:
+        - "Create Table 2"
+      parameters:
+        componentName: "Start"
+    Create Table 2:
+      type: "create-table-v2"
+      transitions:
+        success:
+        - "S3 Load"
+      parameters:
+        componentName: "Create Table 2"
+        createMethod: "Replace"
+        database: "[Environment Default]"
+        schema: "[Environment Default]"
+        table: "customers"
+        snowflakeTableType: "Permanent"
+        columns:
+        - - "customer_id"
+          - "NUMBER"
+          - ""
+          - ""
+          - ""
+          - "Yes"
+          - "Yes"
+          - ""
+          - ""
+        - - "first_name"
+          - "VARCHAR"
+          - "100"
+          - ""
+          - ""
+          - "No"
+          - "No"
+          - ""
+          - ""
+        - - "last_name"
+          - "VARCHAR"
+          - "100"
+          - ""
+          - ""
+          - "No"
+          - "No"
+          - ""
+          - ""
+        - - "email"
+          - "VARCHAR"
+          - "225"
+          - ""
+          - ""
+          - "No"
+          - "No"
+          - ""
+          - ""
+        defaultDdlCollation:
+        primaryKeys:
+        - "customer_id"
+        clusteringKeys:
+        dataRetentionTimeInDays:
+        comment:
+      postProcessing:
+        updateOutputMessage:
+        updateScalarVariables:
+    S3 Load:
+      type: "s3-load"
+      parameters:
+        componentName: "S3 Load"
+        stage: "[Custom]"
+        authentication: "Credentials"
+        s3ObjectPrefix: "s3://kaushikidev/devmatillion/customers.csv"
+        pattern: ".*\\.csv"
+        encryption: "None"
+        warehouse: "[Environment Default]"
+        database: "DEMO_DATABASE"
+        schema: "DEMO_SCHEMA"
+        targetTable: "customers"
+        loadColumns:
+        format: "[Custom]"
+        fileType: "CSV"
+        compression: "AUTO"
+        recordDelimiter:
+        fieldDelimiter:
+        skipHeader: "1"
+        skipBlankLines: "False"
+        dateFormat:
+        timeFormat:
+        timestampFormat:
+        escape:
+        escapeUnenclosedField:
+        trimSpace: "False"
+        fieldOptionallyEnclosed:
+        nullIf:
+        errorOnColumnCountMismatch: "False"
+        emptyFieldAsNull: "True"
+        replaceInvalidCharacters: "False"
+        encodingType:
+        onError: "Abort Statement"
+        sizeLimitB:
+        purgeFiles: "False"
+        truncateColumns: "False"
+        forceLoad: "False"
+      postProcessing:
+        updateOutputMessage:
+        updateScalarVariables:
+design:
+  components:
+    Start:
+      position:
+        x: -370
+        "y": 40
+      tempMetlId: 1
+    Create Table 2:
+      position:
+        x: -280
+        "y": 40
+      tempMetlId: 4
+    S3 Load:
+      position:
+        x: -120
+        "y": 40
+      tempMetlId: 5
