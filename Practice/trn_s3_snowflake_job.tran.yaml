@@ -1,0 +1,43 @@
+type: "transformation"
+version: "1.0"
+pipeline:
+  components:
+    customers:
+      type: "table-input"
+      parameters:
+        componentName: "customers"
+        database: "DEMO_DATABASE"
+        schema: "DEMO_SCHEMA"
+        targetTable: "customers"
+        columnNames:
+        - "customer_id"
+        - "first_name"
+        - "last_name"
+        - "email"
+        timeOffset:
+    Calculator:
+      type: "calculator"
+      sources:
+      - "customers"
+      parameters:
+        componentName: "Calculator"
+        includeInputColumns: "No"
+        calculations:
+        - - "\"first_name\""
+          - "first_name"
+        - - "\"last_name\""
+          - "last_name"
+        - - "CONCAT(\"first_name\", \"last_name\")"
+          - "full_name"
+design:
+  components:
+    customers:
+      position:
+        x: -470
+        "y": 0
+      tempMetlId: 1
+    Calculator:
+      position:
+        x: -310
+        "y": 0
+      tempMetlId: 2
